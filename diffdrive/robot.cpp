@@ -135,6 +135,7 @@ void Robot::update() {
 
     }
 
+    /*
     Serial.print("max_RPM:");
     Serial.print(leftDriveUnit.getMaxRPM());
     Serial.print(",");
@@ -147,6 +148,7 @@ void Robot::update() {
     Serial.print("min_RPM:");
     Serial.print(-leftDriveUnit.getMaxRPM());
     Serial.println();
+    */
 }
 
 float Robot::getLeftRPM() const {
