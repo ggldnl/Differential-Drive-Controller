@@ -74,7 +74,7 @@ float DriveUnit::applyControl(float controlRPM) const {
   _motor.drive(controlRPM / _maxRPM);
 }
 
-void DriveUnit::setGains(float Kp, float Ki, float Kd, float Kf = 0.0) const {
+void DriveUnit::setGains(float Kp, float Ki, float Kd, float Kf = 0.0) {
   _pid.setGains(Kp, Ki, Kd, Kf);
 }
 

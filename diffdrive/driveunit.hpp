@@ -35,7 +35,7 @@ class DriveUnit {
     float getControl() const;
     float applyControl(float control) const;
 
-    void setGains(float kp, float ki, float kd, float Kf = 0.0) const;
+    void setGains(float kp, float ki, float kd, float Kf = 0.0);
 
     void setUpdateRate(int hz);
     void update(bool apply = true);  // To be called regularly in the loop
