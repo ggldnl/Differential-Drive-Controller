@@ -50,12 +50,12 @@ const bool PIDenabled = true;
 const float leftKp = 0.2;
 const float leftKi = 0.8;
 const float leftKd = 0.01;
-const float leftKf = 0.0;
+const float leftKf = 1.0;
 
 const float rightKp = 0.2;
 const float rightKi = 0.8;
 const float rightKd = 0.01;
-const float rightKf = 0.0;
+const float rightKf = 1.0;
 
 // Filtering
 const bool filterEnabled = false;
