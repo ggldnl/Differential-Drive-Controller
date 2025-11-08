@@ -54,3 +54,6 @@
 .history
 .ionide
 .vscode
+
+# Exclude compilation oututs
+diffdrive/build/*
