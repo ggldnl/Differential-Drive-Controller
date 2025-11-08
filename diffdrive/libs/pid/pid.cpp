@@ -1,19 +1,38 @@
 #include "pid.hpp"
 
-PID::PID(double kp, double ki, double kd, double kf = 0.0)
-    : Kp(kp), Ki(ki), Kd(kd), Kf(kf),
-      feedforwardEnabled(true),
+
+PID::PID(double kp, double ki, double kd)
+    : Kp(kp), Ki(ki), Kd(kd),
       integral(0.0), prevError(0.0), firstUpdate(true) {}
 
-void PID::setGains(double kp, double ki, double kd, double kf = 0.0) {
+void PID::setProportional(double kp) {
+    kp = kp;
+}
+
+void PID::setIntegral(double ki) {
+    ki = ki;
+}
+
+void PID::setDerivative(double kd) {
+    kd = kd;
+}
+
+void PID::setGains(double kp, double ki, double kd) {
     Kp = kp;
     Ki = ki;
     Kd = kd;
-    Kf = kf;
 }
 
-void PID::setFeedforwardEnabled(bool enabled) {
-    feedforwardEnabled = enabled;
+double PID::getProportional() const {
+    return Kp;
+}
+
+double PID::getIntegral() const {
+    return Ki;
+}
+
+double PID::getDerivative() const {
+    return Kd;
 }
 
 void PID::reset() {
@@ -27,9 +46,11 @@ double PID::update(double setpoint, double measurement, double dt) {
 
     double error = setpoint - measurement;
 
-    // Integral with clamping
+    // Integral
     integral += error * dt;
-    double maxIntegral = 0.5 * (1.0 / Ki);  // heuristic limit
+
+    // Clamp the integral with an heuristic limit
+    // double maxIntegral = 0.5 * (1.0 / Ki);
     // if (integral > maxIntegral) integral = maxIntegral;
     // if (integral < -maxIntegral) integral = -maxIntegral;
 
@@ -38,9 +59,5 @@ double PID::update(double setpoint, double measurement, double dt) {
     firstUpdate = false;
     prevError = error;
 
-    // PID + feedforward
-    double pidOutput = Kp * error + Ki * integral + Kd * derivative;
-    double ffOutput = feedforwardEnabled ? Kf * setpoint : 0.0;
-
-    return pidOutput + ffOutput;
+    return Kp * error + Ki * integral + Kd * derivative;
 }

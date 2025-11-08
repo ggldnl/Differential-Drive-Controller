@@ -1,21 +1,21 @@
-#include "driveunit.hpp"
-#include "encoder.hpp"
+#include "libs/drive_unit/drive_unit.hpp"
+#include "libs/encoder/encoder.hpp"
+#include "libs/motor/motor.hpp"
+#include "libs/robot/robot.hpp"
 #include "config.hpp"
-#include "motor.hpp"
-#include "robot.hpp"
 
 
 // Motors, Encoders and DriveUnits
 Encoder leftEncoder(leftEncoderA);
 Motor leftMotor(leftMotorIn1, leftMotorIn2, enable);
-DriveUnit leftDriveUnit(leftMotor, leftEncoder, leftTicksPerRev, leftMaxSpeedRPM);
+DriveUnit leftDriveUnit(leftMotor, leftEncoder, leftTicksPerRev, leftMaxSpeedRPM, leftKf);
 
 Encoder rightEncoder(rightEncoderA);
 Motor rightMotor(rightMotorIn1, rightMotorIn2, enable);
-DriveUnit rightDriveUnit(rightMotor, rightEncoder, rightTicksPerRev, rightMaxSpeedRPM);
+DriveUnit rightDriveUnit(rightMotor, rightEncoder, rightTicksPerRev, rightMaxSpeedRPM, rightKf);
 
 // Now that we have everything, we can create the Robot
-Robot robot(leftDriveUnit, rightDriveUnit, wheelRadius, wheelBase);
+Robot robot(leftDriveUnit, rightDriveUnit, wheelBase, wheelRadius);
 
 
 void setup() {
@@ -26,23 +26,48 @@ void setup() {
   // Robot setup
   robot.enable();
 
-  if (PIDenabled){
-    leftDriveUnit.setGains(leftKp, leftKi, leftKd, leftKf);
-    rightDriveUnit.setGains(rightKp, rightKi, rightKd, rightKf);    
+  // PID setup
+  if (PIDEnabled){
+    
+    // Eanble feedback control loops
+    robot.enablePID();
+
+    // Set gains
+    robot.leftDriveUnit.setFeedforward(leftKf);
+    robot.rightDriveUnit.setFeedforward(rightKf);
+    robot.leftDriveUnit.setPIDGains(leftKp, leftKi, leftKd);
+    robot.rightDriveUnit.setPIDGains(rightKp, rightKi, rightKd);
+
+    // Set update rates
+    robot.setControlLoopPeriodHz(controlLoopPeriodHz);
+
   } else {
-    leftDriveUnit.disablePID();
-    rightDriveUnit.disablePID();
+
+    // Disable control loops
+    robot.disablePID();
   }
 
-  if (filterEnabled)
-      robot.enableFiltering();
-  else
-      robot.disableFiltering();
+  // Kalman setup
+  if (KalmanEnabled){
+    
+    // Eanble 1D Kalman filter
+    robot.enableKalman();
+
+    // Set gains
+    robot.leftDriveUnit.setKalmanGains(leftQ, leftR, leftP);
+    robot.rightDriveUnit.setKalmanGains(rightQ, rightR, rightP);
+  
+  } else {
+
+    // Disable Kalman filter
+    robot.disableKalman();
+  }
 
   // Small delay before starting
   delay(3000);
 
-  robot.setRPM(40.0, 40.0);
+  // TODO remove
+  robot.setRPMs(40.0, 40.0);
 }
 
 void loop() {
@@ -67,7 +92,7 @@ void loop() {
       if (commaIndex > 0) {
           float leftRPM  = input.substring(0, commaIndex).toFloat();
           float rightRPM = input.substring(commaIndex + 1).toFloat();  
-          robot.setRPM(leftRPM, rightRPM);
+          robot.setRPMs(leftRPM, rightRPM);
       }
   }
 

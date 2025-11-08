@@ -1,5 +1,6 @@
 #include "shiftregister.hpp"
 
+
 ShiftRegister::ShiftRegister(uint8_t dataPin, uint8_t clockPin, uint8_t latchPin)
     : _dataPin(dataPin), _clockPin(clockPin), _latchPin(latchPin)
 {

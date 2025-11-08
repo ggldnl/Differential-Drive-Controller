@@ -1,15 +1,23 @@
 #ifndef PID_HPP
 #define PID_HPP
 
+#include <Arduino.h>
+
+
 class PID {
 public:
-    PID(double kp = 0.0, double ki = 0.0, double kd = 0.0, double kf = 0.0);
+    PID(double kp = 0.0, double ki = 0.0, double kd = 0.0);
 
     // Set PID gains
-    void setGains(double kp, double ki, double kd, double kf = 0.0);
+    void setProportional(double kp);
+    void setIntegral(double ki);
+    void setDerivative(double kd);
+    void setGains(double kp, double ki, double kd);
 
-    // Enable or disable feedforward
-    void setFeedforwardEnabled(bool enabled);
+    // Getters
+    double getProportional() const;
+    double getIntegral() const;
+    double getDerivative() const;
 
     // Reset internal state (integral, last error)
     void reset();
@@ -21,8 +29,8 @@ public:
     double update(double setpoint, double measurement, double dt_ms);
 
 private:
-    double Kp, Ki, Kd, Kf;
-    bool feedforwardEnabled;
+
+    double Kp, Ki, Kd;
 
     double integral;
     double prevError;

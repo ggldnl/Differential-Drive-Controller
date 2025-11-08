@@ -4,21 +4,49 @@
 #include <Arduino.h>
 
 
+struct EncoderData {
+    long ticks;               // Total ticks since reset
+    unsigned long dtMicros;   // Time between last two ticks (0 if not updated)
+};
+
 class Encoder {
 
   public:
 
-    Encoder(uint8_t pin);
+    /* 
+     * We can use the encoder in two modes:
+     * - COUNT_MODE (default): counts pulses over a time window.
+     * - PERIOD_MODE: measures time between pulses. This is handy when the ticks per revolution are low.
+     */
+    enum Mode {
+        COUNT_MODE,   // count pulses in time window
+        PERIOD_MODE   // measure time between pulses
+    };
 
-    long getTicks();
+    Encoder(uint8_t pin, Mode mode = COUNT_MODE);
+
     void reset();
     void update();
 
+    EncoderData getData();
+
+    void setMode(Mode mode);
+    Mode getMode();
+
   private:
 
-    // Encoder stuff
-    volatile long _ticks;
+    // Encoder pin
     uint8_t _pin;
+
+    // Mode
+    Mode _mode;
+
+    // Count mode
+    long _lastTickMicros;
+    long _tickIntervalMicros;
+
+    // Period mode
+    long _ticks;
 
     /*
      * We need to update the encoder inside the ISR. To do so, we need to 
@@ -45,7 +73,6 @@ class Encoder {
     // 2 static ISR handlers
     static void isr0();
     static void isr1();
-
 };
 
 #endif

@@ -16,20 +16,7 @@ const uint8_t enable = 4;
 
 // Motor parameters
 
-/*
-// I used this setup to estimate the ticks per revolution, not knowing which type of motor I had
-const float leftMaxSpeedRPM = 67.0;               // Used opencv to determine the actual RPM for both motors
-const float leftATicksPerRev = 995;               // Used an Arduino sketch to count the average number of ticks in 1 sec
-const float leftRevPerSec = leftMaxSpeedRPM / 60;
-const float leftTicksPerRev = leftATicksPerRev / leftRevPerSec;
-
-const float rightMaxSpeedRPM = 65.5;
-const float rightATicksPerRev = 942;
-const float rightRevPerSec = rightMaxSpeedRPM / 60;
-const float rightTicksPerRev = rightATicksPerRev / rightRevPerSec;
-*/
-
-// I used this setup with new motors for which I knew exactly the gear ratio
+// Gear ratio
 const float leftMaxSpeedRPM = 60.0f;
 const float leftEncoderPPR = 3.0f;
 const float leftGearRatio = 298.0f;
@@ -45,20 +32,30 @@ const float wheelBase = 0.08;       // 80 mm
 const float wheelRadius = 0.0125;   // 25 / 2 mm
 
 // PID
-const bool PIDenabled = true;
+const bool PIDEnabled = true;
 
-const float leftKp = 0.2;
-const float leftKi = 0.8;
-const float leftKd = 0.01;
-const float leftKf = 1.0;
+const float leftKp = 0.01;
+const float leftKi = 0.0025;
+const float leftKd = 0.0;
+const float leftKf = 0.0;   // Feedforward disabled
 
-const float rightKp = 0.2;
-const float rightKi = 0.8;
-const float rightKd = 0.01;
-const float rightKf = 1.0;
+const float rightKp = 0.01;
+const float rightKi = 0.0025;
+const float rightKd = 0.0;
+const float rightKf = 0.0;  // Feedforward disabled
 
-// Filtering
-const bool filterEnabled = false;
-const bool deadbandEnabled = true;
+// Kalman
+const bool KalmanEnabled = true;
+
+const float leftQ = 0.01;
+const float leftR = 1.0;
+const float leftP = 1.0;
+
+const float rightQ = 0.01;
+const float rightR = 1.0;
+const float rightP = 1.0;
+
+// Update frequencies
+const unsigned long controlLoopPeriodHz = 50;
 
 #endif
