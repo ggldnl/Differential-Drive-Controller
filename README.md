@@ -138,7 +138,7 @@ This is how instantiation looks with the static ISR pattern:
 Encoder encoder(pin);
 ```
 
-This design allows to instantiate an encoder once and forget about ISR setup, tha is handled automatically, with the bonus that interrupt management is isolated inside the Encoder class.
+This design allows to instantiate an encoder once and forget about ISR setup (handled automatically). Interrupt management is isolated inside the Encoder class.
 
 The trade-off is that some configuration must be hardcoded at compile time (the number of supported encoders).
 
