@@ -56,31 +56,13 @@ A configuration script ([`config.hpp`](diffdrive/config.hpp)) is provided where 
 
 ## 🧠 System Architecture
 
-<!-- TODO update images -->
-![System Architecture](media/architecture.jpg)
-*Overview of the Arduino software architecture*
-
 ![Control loop](media/control_loop.jpg)
 *Control loop: this is what each DriveUnit realizes to stabilize the RPM around the setpoint*
 
-The Arduino firmware is built around the following components:
 
-- The **interface** receives commands from the Raspberry Pi via **UART**, parses them and forwards them to the **DriveUnit** objects.  
-    
-    It supports two types of control inputs:
-  - **Direct RPM commands:** `left_RPM`, `right_RPM`
-  - **Velocity commands:** linear (`v`) and angular (`w`) velocity
+The Arduino receives commands through UART from the Raspberry, parses them and controls the hardware accordingly.
 
-- Each **DriveUnit** represent one _actuated_ wheel. It includes a motor and its encoder, a PID loop and a 1D kalman filter. At each update cycle, it:
-
-    1. Measures the current wheel RPM using the encoder  
-    2. Filters the measurement with a 1D Kalman filter  
-    3. Computes the control signal with a PID controller  
-    4. Sends the control signal to the motor driver
-
-    This modular design allows each wheel to be independently regulated to the desired speed.
-
-- The **motor** library contains the logic to control a motor using a DRV8833 h-bridge. It exposes methods to coast, brake and drive the motor provided the speed (float in range -1, 1). The DRV8833 can vary the speed of the motors if PWM pins are used.
+The rest of the firmware is structured around a few key components. All are designed to be modular and reusable:    
 
 - The **encoder** provides the feedback required for RPM estimation.  
 It can operate in two distinct modes depending on the encoder’s position and resolution:
@@ -89,6 +71,21 @@ It can operate in two distinct modes depending on the encoder’s position and r
     |------|--------------|----------------------|
     | **COUNT_MODE** | For high-resolution encoders (e.g., on motor shaft). Uses tick counting over time. | Returns `(absoluteTicks, 0)` |
     | **PERIOD_MODE** | For low-resolution encoders (e.g., on gearbox output). Uses time between ticks. | Returns `(absoluteTicks, ticksTimeDelta)` |
+
+- The **motor** library contains the logic to control a motor using a DRV8833 h-bridge. It exposes methods to coast, brake and drive the motor provided the speed (float in range -1, 1). The DRV8833 can vary the speed of the motors if PWM pins are used.
+
+- The **PID** library provides the implementation for a PID controller. It will be used to match a wheel's actual RPM to a setpoint.
+
+- The **Kalman** library provides the implementation for a 1D Kalman filter.
+
+- Each **DriveUnit** represent one _actuated_ wheel. It bundles a motor, encoder, PID controller and Kalman filter. During each control cycle, it:
+
+    1. Measures the current wheel RPM using the encoder  
+    2. Filters the measurement with a 1D Kalman filter  
+    3. Computes the control signal with a PID controller  
+    4. Sends the control signal to the motor driver
+
+  This allows each wheel to be independently stabilized to its desired speed.
 
 ## 🛞 RPM Computation
 
