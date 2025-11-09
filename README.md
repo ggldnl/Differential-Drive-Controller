@@ -56,10 +56,6 @@ A configuration script ([`config.hpp`](diffdrive/config.hpp)) is provided where 
 
 ## 🧠 System Architecture
 
-![Control loop](media/control_loop.jpg)
-*Control loop: this is what each DriveUnit realizes to stabilize the RPM around the setpoint*
-
-
 The Arduino receives commands through UART from the Raspberry, parses them and controls the hardware accordingly.
 
 The rest of the firmware is structured around a few key components. All are designed to be modular and reusable:    
@@ -76,7 +72,7 @@ It can operate in two distinct modes depending on the encoder’s position and r
 
 - The **PID** library provides the implementation for a PID controller. It will be used to match a wheel's actual RPM to a setpoint.
 
-- The **Kalman** library provides the implementation for a 1D Kalman filter.
+- The **Kalman** library provides the implementation for a 1D Kalman filter. It will be used to filter a wheel's RPM measurement.
 
 - Each **DriveUnit** represent one _actuated_ wheel. It bundles a motor, encoder, PID controller and Kalman filter. During each control cycle, it:
 
@@ -86,6 +82,9 @@ It can operate in two distinct modes depending on the encoder’s position and r
     4. Sends the control signal to the motor driver
 
   This allows each wheel to be independently stabilized to its desired speed.
+
+  ![Control loop](media/control_loop.jpg)
+  *Control loop: this is what each DriveUnit realizes to stabilize the RPM around the setpoint*
 
 ## 🛞 RPM Computation
 
