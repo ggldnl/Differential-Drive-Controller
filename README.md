@@ -2,7 +2,7 @@
 
 Conceptually, my differential drive robot consists of two computational units, one responsible for **low-level motor control and sensor feedback** (Arduino Nano) and the other for handling **high-level navigation and communication** (Raspberry Pi Zero 2W). This repository contains the **Arduino firmware**.
 
-For a complete overview of the project refer to the [main Differential-Drive repository](github.com/ggldnl/Differential-Drive.git). Take also a look to the [repository containing the Hardware](github.com/ggldnl/Differential-Drive-Hardware).
+For a complete overview of the project refer to the [main Differential-Drive repository](https://github.com/ggldnl/Differential-Drive.git). Take also a look to the [repository containing the Hardware](https://github.com/ggldnl/Differential-Drive-Hardware).
 I documented the design process, construction and theory in [this article](https://ggldnl.github.io/projects/differential_drive/index.html).
 
 ## 🔌 Setup Instructions
@@ -163,4 +163,4 @@ Since we are the ones controlling the motors, thus in which direction they are s
 A small shift register control library was implemented as part of this project, but it is not currently used. It was designed for future expansion of the platform. More on this [on the article](https://ggldnl.github.io/projects/differential_drive/index.html).
 
 ## 🤝 Contribution
-Feel free to contribute by opening issues or submitting pull requests. For further information, check out the [main Hexapod repository](github.com/ggldnl/Differential-Drive). Give a ⭐️ to this project if you liked the content.
+Feel free to contribute by opening issues or submitting pull requests. For further information, check out the [main Hexapod repository](https://github.com/ggldnl/Differential-Drive). Give a ⭐️ to this project if you liked the content.
