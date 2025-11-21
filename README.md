@@ -1,13 +1,13 @@
 # Differential Drive – Controller
 
-Conceptually, my differential drive robot consists of two computational units, one responsible for **low-level motor control and sensor feedback** (Arduino Nano) and the other for handling **high-level navigation and communication** (Raspberry Pi Zero 2W). This repository contains the **Arduino firmware**.
+Conceptually, my differential drive robot consists of two computational units, one responsible for **low-level motor control and sensor feedback** (Arduino Nano) and the other for handling **high-level low-frequency heavy tasks** like planing, pose-correction and so on (Raspberry Pi Zero). This repository contains the **Arduino firmware**.
 
-For a complete overview of the project refer to the [main Differential-Drive repository](https://github.com/ggldnl/Differential-Drive.git). Take also a look to the [repository containing the Hardware](https://github.com/ggldnl/Differential-Drive-Hardware).
+Take also a look to the [repository containing the Hardware](https://github.com/ggldnl/Differential-Drive-Hardware.git).
 I documented the design process, construction and theory in [this article](https://ggldnl.github.io/projects/differential_drive/index.html).
 
 ## 🔌 Setup Instructions
 
-This repository contain the main cpp code for the low level control of the robot and ROS2 interface as well as several smaller scripts to test the libraries I wrote. 
+This repository contain the main cpp code for the low level controller of the robot as well as several smaller scripts to test the libraries I wrote. 
 
 > ⚠️ **Important:** If you plan to do the same thing I did and use my PCB, **make sure** the Arduino and the Raspberry are **not** connected during the upload. Upload the code before connecting the two.
 
@@ -50,7 +50,7 @@ The Arduino IDE provides a simple environment for compiling and uploading sketch
 
 ## ⚙️ Configuration
 
-A configuration script ([`config.hpp`](diffdrive/config.hpp)) is provided where you can specify the pins to which each component is connected and tune PID and Kalman gains. I ended up using a PCB (check out the [Differential-Drive-Hardware repository](github.com/ggldnl/Differential-Drive-Hardare) to know more about this) so the connections in my configuration match the board. You can use a breadboard and reconfigure your connections. Keep in mind that different pins expose different functions (interrupts, PWM).
+A configuration script ([`config.hpp`](diffdrive/config.hpp)) is provided where you can specify the pins to which each component is connected and tune PID and Kalman gains. I ended up using a PCB (check out the [Differential-Drive-Hardware repository](github.com/ggldnl/Differential-Drive-Hardare.git) to know more about this) so the connections in my configuration match the board. You can use a breadboard and reconfigure your connections. Keep in mind that different pins expose different functions (interrupts, PWM).
 
 > ⚠️ You might need to tune the PID and Kalman gains again for your hardware.
 
@@ -58,7 +58,7 @@ A configuration script ([`config.hpp`](diffdrive/config.hpp)) is provided where 
 
 The Arduino receives commands through UART from the Raspberry, parses them and controls the hardware accordingly.
 
-The rest of the firmware is structured around a few key components. All are designed to be modular and reusable:    
+The rest of the firmware is structured around a few key components. All are designed to be modular and reusable:
 
 - The **encoder** provides the feedback required for RPM estimation.  
 It can operate in two distinct modes depending on the encoder’s position and resolution:
@@ -68,7 +68,7 @@ It can operate in two distinct modes depending on the encoder’s position and r
     | **COUNT_MODE** | For high-resolution encoders (e.g., on motor shaft). Uses tick counting over time. | Returns `(absoluteTicks, 0)` |
     | **PERIOD_MODE** | For low-resolution encoders (e.g., on gearbox output). Uses time between ticks. | Returns `(absoluteTicks, ticksTimeDelta)` |
 
-- The **motor** library contains the logic to control a motor using a DRV8833 h-bridge. It exposes methods to coast, brake and drive the motor provided the speed (float in range -1, 1). The DRV8833 can vary the speed of the motors if PWM pins are used.
+- The **motor** library contains the logic to control a motor using a DRV8833 H-bridge. It exposes methods to coast, brake and drive the motor provided the speed (float in range -1, 1). The DRV8833 can vary the speed of the motors if PWM pins are used.
 
 - The **PID** library provides the implementation for a PID controller. It will be used to match a wheel's actual RPM to a setpoint.
 
@@ -163,4 +163,4 @@ Since we are the ones controlling the motors, thus in which direction they are s
 A small shift register control library was implemented as part of this project, but it is not currently used. It was designed for future expansion of the platform. More on this [on the article](https://ggldnl.github.io/projects/differential_drive/index.html).
 
 ## 🤝 Contribution
-Feel free to contribute by opening issues or submitting pull requests. For further information, check out the [main Hexapod repository](https://github.com/ggldnl/Differential-Drive). Give a ⭐️ to this project if you liked the content.
+Feel free to contribute by opening issues or submitting pull requests. For further information, check out the [repository containing the Controller](https://github.com/ggldnl/Differential-Drive). Give a ⭐️ to this project if you liked the content.
